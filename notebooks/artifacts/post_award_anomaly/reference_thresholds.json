@@ -1,0 +1,38 @@
+{
+  "category_reference": [
+    {
+      "mainprocurementcategory": "Goods",
+      "award_value_p99": 31330349982.360092,
+      "days_to_award_p95": 34.0,
+      "budget_ratio_p05": 0.6250572618055374,
+      "budget_ratio_p95": 0.9960947345280728
+    },
+    {
+      "mainprocurementcategory": "Services",
+      "award_value_p99": 14813999278.108809,
+      "days_to_award_p95": 65.0,
+      "budget_ratio_p05": 0.6908256103085127,
+      "budget_ratio_p95": 0.9895701590903112
+    },
+    {
+      "mainprocurementcategory": "Works",
+      "award_value_p99": 243135690937.6002,
+      "days_to_award_p95": 49.19999999999982,
+      "budget_ratio_p05": 0.7808792877156961,
+      "budget_ratio_p95": 0.9791575296702812
+    }
+  ],
+  "global_reference": {
+    "award_value_p99": 117811453008.0,
+    "days_to_award_p95": 58.0,
+    "budget_ratio_p05": 0.6994091421028847,
+    "budget_ratio_p95": 0.9889815963320137
+  },
+  "proxy_rule_columns": [
+    "rule_over_budget",
+    "rule_same_day_award",
+    "rule_extreme_award_value",
+    "rule_long_award_duration",
+    "rule_extreme_budget_ratio"
+  ]
+}

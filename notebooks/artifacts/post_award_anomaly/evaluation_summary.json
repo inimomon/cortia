@@ -1,0 +1,19 @@
+{
+  "proxy_positive_count": 15,
+  "proxy_positive_rate": 0.01152073732718894,
+  "model_alert_count": 36,
+  "model_alert_rate": 0.027649769585253458,
+  "proxy_precision": 0.2222222222222222,
+  "proxy_recall": 0.5333333333333333,
+  "proxy_f1": 0.3137254901960784,
+  "model_alert_proxy_hit_rate": 0.2222222222222222,
+  "precision_at_top_n": 0.20512820512820512,
+  "proxy_capture_at_top_n": 0.5333333333333333,
+  "spearman_score_vs_rule_count": 0.19094081050256384,
+  "confusion_matrix": {
+    "tn": 1259,
+    "fp": 28,
+    "fn": 7,
+    "tp": 8
+  }
+}
