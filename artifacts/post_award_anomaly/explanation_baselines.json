@@ -1,0 +1,57 @@
+{
+  "numeric_reference": {
+    "tender_minvalue": {
+      "median": 805873516.25,
+      "spread": 1926869086.25
+    },
+    "award_value": {
+      "median": 702900000.0,
+      "spread": 1673853058.94
+    },
+    "days_to_award": {
+      "median": 21.0,
+      "spread": 19.0
+    },
+    "budget_utilization_ratio": {
+      "median": 0.8900280179367676,
+      "spread": 0.1314024113464276
+    },
+    "value_gap": {
+      "median": -88488592.94999999,
+      "spread": 229993772.25
+    },
+    "supplier_count": {
+      "median": 1.0,
+      "spread": 0.08995573334294484
+    },
+    "title_word_count": {
+      "median": 8.0,
+      "spread": 6.0
+    },
+    "award_value_per_day": {
+      "median": 41528454.24836601,
+      "spread": 108774327.4505364
+    }
+  },
+  "categorical_reference": {
+    "mainprocurementcategory": {
+      "Services": 0.38873357562202965,
+      "Works": 0.3751747274252167,
+      "Goods": 0.2360916969527537
+    }
+  },
+  "explanation_numeric_features": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "supplier_count",
+    "title_word_count",
+    "award_value_per_day"
+  ],
+  "categorical_features": [
+    "mainprocurementcategory"
+  ],
+  "local_explanation_method": "Deviation from normal-baseline medians for numeric features and rarity against normal-baseline frequencies for categorical features."
+}
