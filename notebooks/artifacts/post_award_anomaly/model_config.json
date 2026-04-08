@@ -1,5 +1,6 @@
 {
   "pipeline_type": "post_award_anomaly_detection",
+  "explainability_method": "SHAP TreeExplainer (direct on IsolationForest)",
   "split_strategy": "time_based_85_15",
   "contamination": 0.03,
   "medium_cutoff": 0.45954246689243106,
@@ -35,7 +36,7 @@
     "award_value_per_day"
   ],
   "excluded_from_model": {
-    "buyer_name": "Excluded from the model because buyer identity is heavily imbalanced and would add weak signal.",
-    "tender_status": "Excluded from the model because it is effectively constant in the cleaned dataset."
+    "buyer_name": "Excluded: heavily imbalanced, adds weak signal.",
+    "tender_status": "Excluded: effectively constant in the cleaned dataset."
   }
 }

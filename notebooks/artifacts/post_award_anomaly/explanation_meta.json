@@ -1,0 +1,37 @@
+{
+  "explainability_method": "SHAP TreeExplainer \u2014 direct on IsolationForest",
+  "feature_names_preprocessed": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "log_tender_minvalue",
+    "log_award_value",
+    "title_word_count",
+    "award_title_word_count",
+    "supplier_count",
+    "award_value_per_day",
+    "same_day_award_flag",
+    "award_month",
+    "award_quarter",
+    "award_weekday",
+    "cat_Goods",
+    "cat_Services",
+    "cat_Works"
+  ],
+  "explanation_numeric_features": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "supplier_count",
+    "title_word_count",
+    "award_value_per_day"
+  ],
+  "categorical_features": [
+    "mainprocurementcategory"
+  ],
+  "shap_note": "SHAP values diinterpretasikan sebagai kontribusi fitur terhadap anomaly score. Nilai positif = mendorong ke arah anomaly, negatif = mendorong ke arah normal."
+}

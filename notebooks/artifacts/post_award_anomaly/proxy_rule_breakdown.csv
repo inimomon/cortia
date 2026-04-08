@@ -1,6 +1,0 @@
-rule,count,rate
-rule_over_budget,0,0.0
-rule_same_day_award,0,0.0
-rule_extreme_award_value,10,0.007680491551459293
-rule_long_award_duration,41,0.0314900153609831
-rule_extreme_budget_ratio,122,0.09370199692780339
