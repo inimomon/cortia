@@ -1,0 +1,49 @@
+lspe_id,nama_daerah,raw_feature,mean_abs_shap
+127,Jakarta,mainprocurementcategory,0.46245149011218245
+127,Jakarta,award_quarter,0.19610014580435545
+127,Jakarta,value_gap,0.19132254475461427
+127,Jakarta,award_month,0.15894987672467573
+127,Jakarta,tender_minvalue,0.1574947523552033
+127,Jakarta,award_title_word_count,0.14901138968292874
+127,Jakarta,title_word_count,0.14299936189399903
+127,Jakarta,award_value,0.14236398121928273
+127,Jakarta,award_value_per_day,0.13647715189941215
+127,Jakarta,log_tender_minvalue,0.12940632186218098
+127,Jakarta,log_award_value,0.12361453813606395
+127,Jakarta,days_to_award,0.1205691403537262
+127,Jakarta,budget_utilization_ratio,0.0931826303660269
+127,Jakarta,award_weekday,0.08943508675630137
+127,Jakarta,supplier_count,0.021610763458597634
+127,Jakarta,same_day_award_flag,0.00039160454500069246
+42,Jawa Tengah,mainprocurementcategory,0.4554533274804866
+42,Jawa Tengah,value_gap,0.1765702704583202
+42,Jawa Tengah,days_to_award,0.1664615095977361
+42,Jawa Tengah,award_month,0.15448719231565286
+42,Jawa Tengah,tender_minvalue,0.1544051273442393
+42,Jawa Tengah,log_tender_minvalue,0.1478523517799166
+42,Jawa Tengah,award_quarter,0.1389489340250173
+42,Jawa Tengah,award_value,0.13846578611119612
+42,Jawa Tengah,log_award_value,0.12614471016394976
+42,Jawa Tengah,award_value_per_day,0.1253036056182129
+42,Jawa Tengah,award_weekday,0.11335110496378918
+42,Jawa Tengah,title_word_count,0.10995817020342087
+42,Jawa Tengah,award_title_word_count,0.10006929766787077
+42,Jawa Tengah,budget_utilization_ratio,0.08843406270688434
+42,Jawa Tengah,supplier_count,0.057673321738115485
+42,Jawa Tengah,same_day_award_flag,0.0
+15,Jawa Timur,mainprocurementcategory,0.4930597769729428
+15,Jawa Timur,award_quarter,0.19088399858273258
+15,Jawa Timur,award_value_per_day,0.18361021155279844
+15,Jawa Timur,tender_minvalue,0.16418578662876293
+15,Jawa Timur,value_gap,0.1620715969609861
+15,Jawa Timur,award_value,0.14707303206635206
+15,Jawa Timur,award_month,0.14280965280023486
+15,Jawa Timur,days_to_award,0.1402650486219996
+15,Jawa Timur,log_tender_minvalue,0.13643140029542106
+15,Jawa Timur,log_award_value,0.132735163427782
+15,Jawa Timur,budget_utilization_ratio,0.12257448788603491
+15,Jawa Timur,title_word_count,0.11911836663886297
+15,Jawa Timur,award_title_word_count,0.11819457533453806
+15,Jawa Timur,award_weekday,0.09505970745981569
+15,Jawa Timur,supplier_count,0.06607466481496203
+15,Jawa Timur,same_day_award_flag,0.0
