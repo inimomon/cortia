@@ -1,1 +1,0 @@
-# buat kirim hasil ai nanti
