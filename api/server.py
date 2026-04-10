@@ -1,49 +1,54 @@
-from fastapi import FastAPI, APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, Form, File, BackgroundTasks
+from pydantic import BaseModel, Field
 import pandas as pd
 import numpy as np
 import joblib
 import json
-from pathlib import Path
+import io
+import mysql.connector
+from datetime import datetime
+from config import Config
 
-app = FastAPI()
+# --- KONFIGURASI APP ---
+app = FastAPI(
+    title="Cortia Anomaly Detection API",
+    description="API untuk mendeteksi anomali pengadaan barang/jasa menggunakan Isolation Forest & SHAP Explainer. Data tersimpan otomatis ke MySQL.",
+    version="1.1.0"
+)
 router = APIRouter(prefix="/cortia/api/v1")
 
-# load artifacts
-base_artifact_dir = Path("../artifacts/post_award_anomaly/by_daerah")
-
-daerah = ["jakarta_127", "jawa_timur_15", "jawa_tengah_42"]
-
-# Dictionary untuk menyimpan semua model yang sudah di-load ke RAM
+# --- LOAD ARTIFACTS (MODEL ML) ---
 models_db = {}
 
+print(f"Mencari model di: {Config.ARTIFACT_DIR}")
 print("Memuat model ke dalam memori...")
-for daerah in daerah:
-    reg_dir = base_artifact_dir / daerah
+for d in Config.DAERAH_LIST:
+    reg_dir = Config.ARTIFACT_DIR / d
     if reg_dir.exists():
-        models_db[daerah] = {
+        models_db[d] = {
             "model": joblib.load(reg_dir / "isolation_forest.joblib"),
             "preprocessor": joblib.load(reg_dir / "preprocessor.joblib"),
             "explainer_shap": joblib.load(reg_dir / "shap_explainer.joblib"),
             "model_config": json.loads((reg_dir / "model_config.json").read_text(encoding="utf-8")),
             "explanation_meta": json.loads((reg_dir / "explanation_meta.json").read_text(encoding="utf-8"))
         }
-        print(f"Model {daerah} berhasil diload.")
+        print(f"Model {d} berhasil diload.")
     else:
         print(f"Peringatan: Folder {reg_dir} tidak ditemukan.")
 
-# helper functions + json body
+# --- DATA MODELS (UNTUK SWAGGER DOKUMENTASI) ---
 class ProcurementData(BaseModel):
-    daerah: str
-    award_date: str
-    tender_minvalue: float
-    award_value: float
-    tender_title: str
-    award_title: str
-    award_supplier: str
-    days_to_award: int
-    mainprocurementcategory: str
+    daerah: str = Field(..., example="jakarta_127", description="ID Daerah (jakarta_127, jawa_timur_15, dll)")
+    award_date: str = Field(..., example="2023-05-20", description="Format: YYYY-MM-DD")
+    tender_minvalue: float = Field(..., example=1500000000.0)
+    award_value: float = Field(..., example=1495000000.0)
+    tender_title: str = Field(..., example="Pembangunan Jembatan Beton")
+    award_title: str = Field(..., example="Kontrak Pembangunan Jembatan")
+    award_supplier: str = Field(..., example="PT. Bangun Sejahtera, PT. Maju Jaya")
+    days_to_award: int = Field(..., example=5)
+    mainprocurementcategory: str = Field(..., example="Works")
 
+# --- KAMUS MAPPING UNTUK SHAP (PENJELASAN) ---
 KAMUS_KONSEP = {
     "award_title_word_count": "Kompleksitas Judul Kontrak",
     "days_to_award": "Durasi Proses Tender",
@@ -65,6 +70,62 @@ KAMUS_RISIKO = {
     "tender_minvalue": "penetapan batas minimum yang tidak lazim berisiko membatasi partisipasi vendor kompeten."
 }
 
+# --- DATABASE FUNCTIONS ---
+def get_db_connection():
+    return mysql.connector.connect(**Config.DB_CONFIG)
+
+def save_prediction_to_db(daerah, tender_title, score, risk_level, explanation):
+    """Menyimpan satu prediksi ke tabel MySQL."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        query = """
+            INSERT INTO predictions 
+            (daerah, tender_title, score, risk_level, explanation, created_at) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        values = (daerah, tender_title, score, risk_level, explanation, datetime.now())
+        
+        cursor.execute(query, values)
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"❌ Error Database: {err}")
+    finally:
+        if 'conn' in locals() and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+def save_batch_predictions_to_db(daerah, results):
+    """Menyimpan banyak prediksi sekaligus ke tabel MySQL."""
+    if not results: return
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        query = """
+            INSERT INTO predictions 
+            (daerah, tender_title, score, risk_level, explanation, created_at) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        
+        data_to_insert = [
+            (daerah, r['tender_title'], r['score'], r['risk_level'], r['human_readable_explanation'], datetime.now())
+            for r in results
+        ]
+        
+        cursor.executemany(query, data_to_insert)
+        conn.commit()
+        print(f"✅ Berhasil menyimpan {len(results)} data dari file CSV ke MySQL.")
+    except mysql.connector.Error as err:
+        print(f"❌ Error Database Batch: {err}")
+    finally:
+        if 'conn' in locals() and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+# --- LOGIC HELPER FUNCTIONS ---
 def format_number(value):
     if pd.isna(value): return "missing"
     if isinstance(value, (int, np.integer)): return f"{int(value):,}"
@@ -94,7 +155,7 @@ def assign_severity(scores, medium_cutoff, anomaly_threshold):
         [scores >= anomaly_threshold, scores >= medium_cutoff],
         ["high", "medium"],
         default="low"
-    )[0] 
+    )[0]
 
 def generate_natural_reason(feat, raw_val, shap_val, severity_band):
     is_anomaly_driver = shap_val > 0
@@ -115,7 +176,6 @@ def generate_natural_reason(feat, raw_val, shap_val, severity_band):
             return f"Komponen **{nama_manusiawi}** ({val_str}) menunjukkan aktivitas yang dinamis namun tetap sesuai dengan standar operasional."
         return f"Parameter **{nama_manusiawi}** ({val_str}) sangat identik dengan profil pengadaan yang bersih dan akuntabel."
 
-# Tambahan parameter explanation_meta agar sesuai dengan daerah masing-masing
 def explain_prediction_shap(original_row, row_shap, explanation_meta):
     feature_names = explanation_meta["feature_names_preprocessed"]
     severity_band = original_row['severity_band']
@@ -133,19 +193,16 @@ def explain_prediction_shap(original_row, row_shap, explanation_meta):
 
     return f"[{severity_band.upper()}] {header}\n" + "\n".join([f"• {r}" for r in reasons])
 
-# API endpoint
-@router.get("/")
+# --- ENDPOINTS ---
+@router.get("/", tags=["Health Check"])
 def read_root():
-    return {"message": "Welcome to Cortia API v1!"}
+    return {"status": "online", "message": "Welcome to Cortia API v1!", "database": "Terhubung jika DB aktif"}
 
-@router.post("/predict")
-def predict_anomaly(payload: ProcurementData):
+@router.post("/predict_input_text", tags=["Inference"])
+def predict_anomaly(payload: ProcurementData, background_tasks: BackgroundTasks):
     daerah = payload.daerah
     if daerah not in models_db:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Daerah '{daerah}' tidak ditemukan. Pilihan valid: {', '.join(models_db.keys())}"
-        )
+        raise HTTPException(status_code=400, detail=f"Daerah '{daerah}' tidak ditemukan.")
     
     target_artifacts = models_db[daerah]
     model = target_artifacts["model"]
@@ -161,9 +218,8 @@ def predict_anomaly(payload: ProcurementData):
     demo_input = pd.DataFrame([payload_dict])
     
     demo_features = engineer_features(demo_input)
-    
     X_demo = preprocessor.transform(demo_features[feature_columns])
-    demo_score = -model.score_samples(X_demo)[0]
+    demo_score = float(-model.score_samples(X_demo)[0])
     
     severity_band = assign_severity(
         np.array([demo_score]), 
@@ -175,12 +231,88 @@ def predict_anomaly(payload: ProcurementData):
     shap_values = explainer_shap.shap_values(X_demo)[0]
     explanation = explain_prediction_shap(demo_features.iloc[0], shap_values, explanation_meta)
     
+    # Simpan ke Database
+    background_tasks.add_task(
+        save_prediction_to_db, 
+        daerah, payload.tender_title, round(demo_score, 4), severity_band, explanation
+    )
+    
     return {
         "status": "success",
         "daerah_diproses": daerah,
-        "score": round(float(demo_score), 4),
+        "score": round(demo_score, 4),
         "risk_level": severity_band,
         "human_readable_explanation": explanation
+    }
+
+
+@router.post("/predict_file", tags=["Inference"])
+async def predict_anomaly_file(
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(..., description="Upload file CSV berisikan data pengadaan"),
+    daerah: str = Form(..., description="ID Daerah (contoh: jawa_timur_15)")
+):
+    if daerah not in models_db:
+        raise HTTPException(status_code=400, detail=f"Daerah '{daerah}' tidak ditemukan.")
+    
+    try:
+        contents = await file.read()
+        df_input = pd.read_csv(io.BytesIO(contents))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Gagal membaca file CSV. Error: {str(e)}")
+        
+    required_columns = [
+        "award_date", "tender_minvalue", "award_value", "tender_title",
+        "award_title", "award_supplier", "days_to_award", "mainprocurementcategory"
+    ]
+    missing_cols = [col for col in required_columns if col not in df_input.columns]
+    if missing_cols:
+        raise HTTPException(status_code=400, detail=f"CSV tidak valid! Kehilangan kolom: {', '.join(missing_cols)}")
+        
+    target_artifacts = models_db[daerah]
+    model = target_artifacts["model"]
+    preprocessor = target_artifacts["preprocessor"]
+    explainer_shap = target_artifacts["explainer_shap"]
+    model_config = target_artifacts["model_config"]
+    explanation_meta = target_artifacts["explanation_meta"]
+    
+    feature_columns = model_config["numeric_features"] + model_config["categorical_features"]
+    
+    demo_features = engineer_features(df_input)
+    X_demo = preprocessor.transform(demo_features[feature_columns])
+    demo_scores = -model.score_samples(X_demo)
+    
+    severity_bands = [
+        assign_severity(np.array([s]), model_config["medium_cutoff"], model_config["anomaly_threshold"]) 
+        for s in demo_scores
+    ]
+    demo_features["severity_band"] = severity_bands
+    
+    shap_values_batch = explainer_shap.shap_values(X_demo)
+    if isinstance(shap_values_batch, list):
+        shap_values_batch = shap_values_batch[0]
+        
+    results = []
+    for i in range(len(df_input)):
+        raw_score = float(demo_scores[i])
+        explanation = explain_prediction_shap(demo_features.iloc[i], shap_values_batch[i], explanation_meta)
+        
+        results.append({
+            "baris_ke": i + 1,
+            "tender_title": str(df_input.iloc[i].get("tender_title", "Unknown")),
+            "score": round(raw_score, 4),
+            "risk_level": severity_bands[i],
+            "human_readable_explanation": explanation
+        })
+        
+    # Simpan data batch ke database berjalan di background 
+    background_tasks.add_task(save_batch_predictions_to_db, daerah, results)
+        
+    return {
+        "status": "success",
+        "daerah_diproses": daerah,
+        "total_data_diproses": len(results),
+        "data": results
     }
 
 app.include_router(router)
