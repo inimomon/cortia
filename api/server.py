@@ -1,0 +1,186 @@
+from fastapi import FastAPI, APIRouter, HTTPException
+from pydantic import BaseModel
+import pandas as pd
+import numpy as np
+import joblib
+import json
+from pathlib import Path
+
+app = FastAPI()
+router = APIRouter(prefix="/cortia/api/v1")
+
+# load artifacts
+base_artifact_dir = Path("../artifacts/post_award_anomaly/by_daerah")
+
+daerah = ["jakarta_127", "jawa_timur_15", "jawa_tengah_42"]
+
+# Dictionary untuk menyimpan semua model yang sudah di-load ke RAM
+models_db = {}
+
+print("Memuat model ke dalam memori...")
+for daerah in daerah:
+    reg_dir = base_artifact_dir / daerah
+    if reg_dir.exists():
+        models_db[daerah] = {
+            "model": joblib.load(reg_dir / "isolation_forest.joblib"),
+            "preprocessor": joblib.load(reg_dir / "preprocessor.joblib"),
+            "explainer_shap": joblib.load(reg_dir / "shap_explainer.joblib"),
+            "model_config": json.loads((reg_dir / "model_config.json").read_text(encoding="utf-8")),
+            "explanation_meta": json.loads((reg_dir / "explanation_meta.json").read_text(encoding="utf-8"))
+        }
+        print(f"Model {daerah} berhasil diload.")
+    else:
+        print(f"Peringatan: Folder {reg_dir} tidak ditemukan.")
+
+# helper functions + json body
+class ProcurementData(BaseModel):
+    daerah: str
+    award_date: str
+    tender_minvalue: float
+    award_value: float
+    tender_title: str
+    award_title: str
+    award_supplier: str
+    days_to_award: int
+    mainprocurementcategory: str
+
+KAMUS_KONSEP = {
+    "award_title_word_count": "Kompleksitas Judul Kontrak",
+    "days_to_award": "Durasi Proses Tender",
+    "budget_utilization_ratio": "Rasio Penyerapan Anggaran",
+    "value_gap": "Selisih Nilai Tender dan Kontrak",
+    "supplier_count": "Jumlah Peserta Tender",
+    "award_value_per_day": "Laju Pengeluaran Harian",
+    "tender_minvalue": "Batas Minimum Tender",
+    "award_value": "Nilai Kontrak Akhir"
+}
+
+KAMUS_RISIKO = {
+    "award_title_word_count": "pola penamaan judul yang tidak standar seringkali digunakan untuk mengaburkan spesifikasi asli proyek.",
+    "days_to_award": "proses yang selesai terlalu cepat atau terlalu lambat mengindikasikan adanya potensi pengaturan pemenang (bid-rigging).",
+    "budget_utilization_ratio": "penyerapan yang mendekati 100% secara sempurna merupakan indikator umum terjadinya mark-up harga.",
+    "value_gap": "selisih yang tidak proporsional menunjukkan potensi inefisiensi atau kesalahan estimasi biaya awal.",
+    "supplier_count": "minimnya partisipan tender dapat mengurangi kompetisi sehat dan meningkatkan risiko monopoli.",
+    "award_value_per_day": "beban biaya harian yang ekstrem menunjukkan ketidakwajaran antara nilai proyek dengan durasi pengerjaan.",
+    "tender_minvalue": "penetapan batas minimum yang tidak lazim berisiko membatasi partisipasi vendor kompeten."
+}
+
+def format_number(value):
+    if pd.isna(value): return "missing"
+    if isinstance(value, (int, np.integer)): return f"{int(value):,}"
+    if isinstance(value, (float, np.floating)): return f"{value:,.2f}"
+    return str(value)
+
+def engineer_features(frame):
+    data = frame.copy()
+    data["award_date"] = pd.to_datetime(data["award_date"])
+    data["award_month"] = data["award_date"].dt.month
+    data["award_quarter"] = data["award_date"].dt.quarter
+    data["award_weekday"] = data["award_date"].dt.weekday
+    data["log_tender_minvalue"] = np.log1p(data["tender_minvalue"])
+    data["log_award_value"] = np.log1p(data["award_value"])
+    data["value_gap"] = data["award_value"] - data["tender_minvalue"]
+    data["budget_utilization_ratio"] = data["award_value"] / data["tender_minvalue"].replace(0, np.nan)
+    data["budget_utilization_ratio"] = data["budget_utilization_ratio"].fillna(0)
+    data["title_word_count"] = data["tender_title"].fillna("").str.split().str.len()
+    data["award_title_word_count"] = data["award_title"].fillna("").str.split().str.len()
+    data["supplier_count"] = data["award_supplier"].fillna("").astype(str).str.split(",").str.len()
+    data["award_value_per_day"] = data["award_value"] / data["days_to_award"].replace(0, 1)
+    data["same_day_award_flag"] = (data["days_to_award"] == 0).astype(int)
+    return data
+
+def assign_severity(scores, medium_cutoff, anomaly_threshold):
+    return np.select(
+        [scores >= anomaly_threshold, scores >= medium_cutoff],
+        ["high", "medium"],
+        default="low"
+    )[0] 
+
+def generate_natural_reason(feat, raw_val, shap_val, severity_band):
+    is_anomaly_driver = shap_val > 0
+    nama_manusiawi = KAMUS_KONSEP.get(feat, feat.replace("_", " ").title())
+    val_str = format_number(raw_val)
+    
+    if severity_band == "high":
+        if is_anomaly_driver:
+            risiko = KAMUS_RISIKO.get(feat, "hal ini memerlukan verifikasi kepatuhan dokumen lebih lanjut.")
+            return f"Sistem menemukan indikasi penyimpangan serius pada **{nama_manusiawi}** ({val_str}). Secara audit, {risiko}"
+        return f"Meskipun terdapat temuan risiko lain, parameter **{nama_manusiawi}** ({val_str}) terpantau tetap stabil."
+    elif severity_band == "medium":
+        if is_anomaly_driver:
+            return f"Terdapat sedikit kejanggalan pada data **{nama_manusiawi}** ({val_str}). Meskipun menunjukkan pola yang tidak biasa, angka ini dinilai masih berada dalam batas toleransi kebijakan."
+        return f"Parameter **{nama_manusiawi}** ({val_str}) memberikan sinyal kestabilan di tengah beberapa anomali minor lainnya."
+    else:
+        if is_anomaly_driver:
+            return f"Komponen **{nama_manusiawi}** ({val_str}) menunjukkan aktivitas yang dinamis namun tetap sesuai dengan standar operasional."
+        return f"Parameter **{nama_manusiawi}** ({val_str}) sangat identik dengan profil pengadaan yang bersih dan akuntabel."
+
+# Tambahan parameter explanation_meta agar sesuai dengan daerah masing-masing
+def explain_prediction_shap(original_row, row_shap, explanation_meta):
+    feature_names = explanation_meta["feature_names_preprocessed"]
+    severity_band = original_row['severity_band']
+    top_indices = np.argsort(row_shap)[-3:][::-1]
+    
+    reasons = []
+    for idx in top_indices:
+        feat_name = feature_names[idx]
+        raw_val = original_row[feat_name] if feat_name in original_row else "N/A"
+        reasons.append(generate_natural_reason(feat_name, raw_val, row_shap[idx], severity_band))
+    
+    if severity_band == "high": header = "Sistem mendeteksi aktivitas yang MENCURIGAKAN dan berisiko tinggi:"
+    elif severity_band == "medium": header = "Sistem menemukan beberapa temuan BORDERLINE yang memerlukan perhatian moderat:"
+    else: header = "Status transaksi dinilai AMAN dan memenuhi kriteria kepatuhan standar:"
+
+    return f"[{severity_band.upper()}] {header}\n" + "\n".join([f"• {r}" for r in reasons])
+
+# API endpoint
+@router.get("/")
+def read_root():
+    return {"message": "Welcome to Cortia API v1!"}
+
+@router.post("/predict")
+def predict_anomaly(payload: ProcurementData):
+    daerah = payload.daerah
+    if daerah not in models_db:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Daerah '{daerah}' tidak ditemukan. Pilihan valid: {', '.join(models_db.keys())}"
+        )
+    
+    target_artifacts = models_db[daerah]
+    model = target_artifacts["model"]
+    preprocessor = target_artifacts["preprocessor"]
+    explainer_shap = target_artifacts["explainer_shap"]
+    model_config = target_artifacts["model_config"]
+    explanation_meta = target_artifacts["explanation_meta"]
+    
+    feature_columns = model_config["numeric_features"] + model_config["categorical_features"]
+
+    payload_dict = payload.model_dump()
+    payload_dict.pop('daerah')
+    demo_input = pd.DataFrame([payload_dict])
+    
+    demo_features = engineer_features(demo_input)
+    
+    X_demo = preprocessor.transform(demo_features[feature_columns])
+    demo_score = -model.score_samples(X_demo)[0]
+    
+    severity_band = assign_severity(
+        np.array([demo_score]), 
+        model_config["medium_cutoff"], 
+        model_config["anomaly_threshold"]
+    )
+    demo_features["severity_band"] = severity_band
+    
+    shap_values = explainer_shap.shap_values(X_demo)[0]
+    explanation = explain_prediction_shap(demo_features.iloc[0], shap_values, explanation_meta)
+    
+    return {
+        "status": "success",
+        "daerah_diproses": daerah,
+        "score": round(float(demo_score), 4),
+        "risk_level": severity_band,
+        "human_readable_explanation": explanation
+    }
+
+app.include_router(router)
