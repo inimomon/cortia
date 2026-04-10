@@ -157,6 +157,25 @@ def assign_severity(scores, medium_cutoff, anomaly_threshold):
         default="low"
     )[0]
 
+def calculate_risk_percentage(score, medium_cutoff, anomaly_threshold):
+    """Convert the anomaly score into an intuitive 0-100 risk percentage."""
+    denominator = max(float(anomaly_threshold) - float(medium_cutoff), 1e-9)
+    raw_percentage = ((float(score) - float(medium_cutoff)) / denominator) * 100
+    return round(float(np.clip(raw_percentage, 0, 100)), 2)
+
+def normalize_shap_values(shap_values):
+    """Handle SHAP return shapes across library versions."""
+    if isinstance(shap_values, list):
+        shap_values = shap_values[0]
+    if getattr(shap_values, "ndim", 1) > 1:
+        return shap_values[0]
+    return shap_values
+
+def get_raw_feature_value(original_row, feature_name):
+    raw_feature_name = "mainprocurementcategory" if feature_name.startswith("cat_") else feature_name
+    raw_value = original_row[raw_feature_name] if raw_feature_name in original_row else "N/A"
+    return raw_feature_name, raw_value
+
 def generate_natural_reason(feat, raw_val, shap_val, severity_band):
     is_anomaly_driver = shap_val > 0
     nama_manusiawi = KAMUS_KONSEP.get(feat, feat.replace("_", " ").title())
@@ -179,13 +198,13 @@ def generate_natural_reason(feat, raw_val, shap_val, severity_band):
 def explain_prediction_shap(original_row, row_shap, explanation_meta):
     feature_names = explanation_meta["feature_names_preprocessed"]
     severity_band = original_row['severity_band']
-    top_indices = np.argsort(row_shap)[-3:][::-1]
+    top_indices = np.argsort(np.abs(row_shap))[-3:][::-1]
     
     reasons = []
     for idx in top_indices:
         feat_name = feature_names[idx]
-        raw_val = original_row[feat_name] if feat_name in original_row else "N/A"
-        reasons.append(generate_natural_reason(feat_name, raw_val, row_shap[idx], severity_band))
+        raw_feat_name, raw_val = get_raw_feature_value(original_row, feat_name)
+        reasons.append(generate_natural_reason(raw_feat_name, raw_val, row_shap[idx], severity_band))
     
     if severity_band == "high": header = "Sistem mendeteksi aktivitas yang MENCURIGAKAN dan berisiko tinggi:"
     elif severity_band == "medium": header = "Sistem menemukan beberapa temuan BORDERLINE yang memerlukan perhatian moderat:"
@@ -198,6 +217,7 @@ def explain_prediction_shap(original_row, row_shap, explanation_meta):
 def read_root():
     return {"status": "online", "message": "Welcome to Cortia API v1!", "database": "Terhubung jika DB aktif"}
 
+@router.post("/predict", tags=["Inference"], include_in_schema=False)
 @router.post("/predict_input_text", tags=["Inference"])
 def predict_anomaly(payload: ProcurementData, background_tasks: BackgroundTasks):
     daerah = payload.daerah
@@ -220,6 +240,11 @@ def predict_anomaly(payload: ProcurementData, background_tasks: BackgroundTasks)
     demo_features = engineer_features(demo_input)
     X_demo = preprocessor.transform(demo_features[feature_columns])
     demo_score = float(-model.score_samples(X_demo)[0])
+    risk_percentage = calculate_risk_percentage(
+        demo_score,
+        model_config["medium_cutoff"],
+        model_config["anomaly_threshold"]
+    )
     
     severity_band = assign_severity(
         np.array([demo_score]), 
@@ -228,7 +253,7 @@ def predict_anomaly(payload: ProcurementData, background_tasks: BackgroundTasks)
     )
     demo_features["severity_band"] = severity_band
     
-    shap_values = explainer_shap.shap_values(X_demo)[0]
+    shap_values = normalize_shap_values(explainer_shap.shap_values(X_demo))
     explanation = explain_prediction_shap(demo_features.iloc[0], shap_values, explanation_meta)
     
     # Simpan ke Database
@@ -241,6 +266,7 @@ def predict_anomaly(payload: ProcurementData, background_tasks: BackgroundTasks)
         "status": "success",
         "daerah_diproses": daerah,
         "score": round(demo_score, 4),
+        "risk_percentage": risk_percentage,
         "risk_level": severity_band,
         "human_readable_explanation": explanation
     }
@@ -286,6 +312,10 @@ async def predict_anomaly_file(
         assign_severity(np.array([s]), model_config["medium_cutoff"], model_config["anomaly_threshold"]) 
         for s in demo_scores
     ]
+    risk_percentages = [
+        calculate_risk_percentage(s, model_config["medium_cutoff"], model_config["anomaly_threshold"])
+        for s in demo_scores
+    ]
     demo_features["severity_band"] = severity_bands
     
     shap_values_batch = explainer_shap.shap_values(X_demo)
@@ -301,6 +331,7 @@ async def predict_anomaly_file(
             "baris_ke": i + 1,
             "tender_title": str(df_input.iloc[i].get("tender_title", "Unknown")),
             "score": round(raw_score, 4),
+            "risk_percentage": risk_percentages[i],
             "risk_level": severity_bands[i],
             "human_readable_explanation": explanation
         })

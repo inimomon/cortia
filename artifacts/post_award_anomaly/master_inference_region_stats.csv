@@ -1,0 +1,10 @@
+nama_daerah,prediction_label,count,percentage
+Jakarta,anomaly,37,2.84
+Jakarta,normal,961,73.81
+Jakarta,warning,304,23.35
+Jawa Tengah,anomaly,2,2.0
+Jawa Tengah,normal,85,85.0
+Jawa Tengah,warning,13,13.0
+Jawa Timur,anomaly,6,6.0
+Jawa Timur,normal,65,65.0
+Jawa Timur,warning,29,29.0

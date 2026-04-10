@@ -2,14 +2,14 @@
   "bundle_type": "multi_daerah_isolation_forest_router",
   "routing_column": "nama_daerah",
   "routing_strategy": "casefold_exact_match",
-  "artifact_root": "C:\\Users\\VICTUS\\coding\\collab\\03_training\\artifacts\\post_award_anomaly",
+  "artifact_root": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly",
   "region_count": 3,
   "regions": [
     {
       "routing_key": "jakarta",
       "nama_daerah": "Jakarta",
       "lspe_id": "127",
-      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\03_training\\artifacts\\post_award_anomaly\\by_daerah\\jakarta_127",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jakarta_127",
       "anomaly_threshold": 0.5819433760068418,
       "medium_cutoff": 0.46211583411703916
     },
@@ -17,7 +17,7 @@
       "routing_key": "jawa tengah",
       "nama_daerah": "Jawa Tengah",
       "lspe_id": "42",
-      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\03_training\\artifacts\\post_award_anomaly\\by_daerah\\jawa_tengah_42",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jawa_tengah_42",
       "anomaly_threshold": 0.5876663748116363,
       "medium_cutoff": 0.45801716448955926
     },
@@ -25,7 +25,7 @@
       "routing_key": "jawa timur",
       "nama_daerah": "Jawa Timur",
       "lspe_id": "15",
-      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\03_training\\artifacts\\post_award_anomaly\\by_daerah\\jawa_timur_15",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jawa_timur_15",
       "anomaly_threshold": 0.5735627218347938,
       "medium_cutoff": 0.46942996416383587
     }

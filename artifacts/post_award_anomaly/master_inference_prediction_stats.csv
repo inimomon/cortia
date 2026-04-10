@@ -1,0 +1,4 @@
+prediction_label,count,percentage
+normal,1111,73.97
+warning,346,23.04
+anomaly,45,3.0

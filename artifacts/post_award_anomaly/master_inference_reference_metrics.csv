@@ -1,0 +1,7 @@
+metric,value
+total_rows_scored,1502.0
+reference_rows_found,1502.0
+reference_true_matches,1502.0
+reference_false_mismatches,0.0
+reference_label_accuracy_pct,100.0
+reference_score_accuracy_pct,100.0
