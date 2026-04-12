@@ -1,0 +1,29 @@
+{
+  "region_name": "Banten",
+  "lspe_id": "99",
+  "feature_names_preprocessed": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "log_tender_minvalue",
+    "log_award_value",
+    "title_word_count",
+    "award_title_word_count",
+    "supplier_count",
+    "award_value_per_day",
+    "same_day_award_flag",
+    "award_month",
+    "award_quarter",
+    "award_weekday",
+    "cat_Goods",
+    "cat_Services",
+    "cat_Works"
+  ],
+  "categorical_features": [
+    "mainprocurementcategory"
+  ],
+  "routing_note": "Master bundle routes by nama_daerah (casefold match).",
+  "shap_note": "Positive SHAP raises anomaly score; negative lowers it."
+}
