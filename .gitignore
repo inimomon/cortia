@@ -1,1 +1,7 @@
 *.env
+data/
+*.csv
+*.json
+artifacts/
+*.joblib
+*.pkl
