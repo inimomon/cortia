@@ -1,0 +1,52 @@
+{
+  "model_type": "IsolationForest",
+  "routing_mode": "per_nama_daerah",
+  "routing_key": "nusa tenggara timur",
+  "region_name": "Nusa Tenggara Timur",
+  "lspe_id": "131",
+  "numeric_features": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "log_tender_minvalue",
+    "log_award_value",
+    "title_word_count",
+    "award_title_word_count",
+    "supplier_count",
+    "award_value_per_day",
+    "same_day_award_flag",
+    "award_month",
+    "award_quarter",
+    "award_weekday"
+  ],
+  "categorical_features": [
+    "mainprocurementcategory"
+  ],
+  "feature_columns": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "log_tender_minvalue",
+    "log_award_value",
+    "title_word_count",
+    "award_title_word_count",
+    "supplier_count",
+    "award_value_per_day",
+    "same_day_award_flag",
+    "award_month",
+    "award_quarter",
+    "award_weekday",
+    "mainprocurementcategory"
+  ],
+  "contamination": 0.03,
+  "medium_cutoff": 0.45909274500627695,
+  "anomaly_threshold": 0.5743079268867627,
+  "train_rows": 2860,
+  "test_rows": 508,
+  "train_end_date": "2021-05-05T00:00:00",
+  "test_start_date": "2021-05-06T00:00:00"
+}

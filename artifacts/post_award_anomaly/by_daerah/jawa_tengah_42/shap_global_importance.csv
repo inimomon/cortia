@@ -1,17 +1,3 @@
-lspe_id,nama_daerah,raw_feature,mean_abs_shap
-42,Jawa Tengah,mainprocurementcategory,0.4554533274804866
-42,Jawa Tengah,value_gap,0.1765702704583202
-42,Jawa Tengah,days_to_award,0.1664615095977361
-42,Jawa Tengah,award_month,0.15448719231565286
-42,Jawa Tengah,tender_minvalue,0.1544051273442393
-42,Jawa Tengah,log_tender_minvalue,0.1478523517799166
-42,Jawa Tengah,award_quarter,0.1389489340250173
-42,Jawa Tengah,award_value,0.13846578611119612
-42,Jawa Tengah,log_award_value,0.12614471016394976
-42,Jawa Tengah,award_value_per_day,0.1253036056182129
-42,Jawa Tengah,award_weekday,0.11335110496378918
-42,Jawa Tengah,title_word_count,0.10995817020342087
-42,Jawa Tengah,award_title_word_count,0.10006929766787077
-42,Jawa Tengah,budget_utilization_ratio,0.08843406270688434
-42,Jawa Tengah,supplier_count,0.057673321738115485
-42,Jawa Tengah,same_day_award_flag,0.0
+version https://git-lfs.github.com/spec/v1
+oid sha256:a5325d5c03eb43aa9cd4adaabde4e1975a08f3519e4be9467f814d1b379e2a62
+size 861

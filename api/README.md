@@ -17,7 +17,7 @@ Endpoint `predict_input_text` mengharapkan payload JSON dengan struktur berikut:
 
 | Parameter | Tipe Data | Penjelasan |
 | :--- | :--- | :--- |
-| `daerah` | `string` | ID daerah yang akan diproses. Nilai valid: `"jakarta_127"`, `"jawa_timur_15"`, atau `"jawa_tengah_42"`. |
+| `daerah` | `string` | ID daerah yang akan diproses. Nilainya mengikuti folder artifact yang tersedia di `artifacts/post_award_anomaly/by_daerah`, misalnya `"jakarta_127"`. |
 | `award_date` | `string` | Tanggal kontrak dengan format `YYYY-MM-DD`. |
 | `tender_minvalue` | `float` | Batas nilai minimum tender atau HPS dalam Rupiah. |
 | `award_value` | `float` | Nilai kontrak akhir yang disepakati dengan pemenang tender. |

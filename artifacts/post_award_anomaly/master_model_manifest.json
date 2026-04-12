@@ -3,31 +3,223 @@
   "routing_column": "nama_daerah",
   "routing_strategy": "casefold_exact_match",
   "artifact_root": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly",
-  "region_count": 3,
+  "region_count": 27,
   "regions": [
     {
-      "routing_key": "jakarta",
-      "nama_daerah": "Jakarta",
+      "routing_key": "aceh",
+      "nama_daerah": "Aceh",
+      "lspe_id": "106",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\aceh_106",
+      "anomaly_threshold": 0.5753546742206403,
+      "medium_cutoff": 0.4606989460379091
+    },
+    {
+      "routing_key": "bali",
+      "nama_daerah": "Bali",
+      "lspe_id": "33",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\bali_33",
+      "anomaly_threshold": 0.5882643091515813,
+      "medium_cutoff": 0.47338382506271176
+    },
+    {
+      "routing_key": "banten",
+      "nama_daerah": "Banten",
+      "lspe_id": "99",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\banten_99",
+      "anomaly_threshold": 0.5769228606386474,
+      "medium_cutoff": 0.4637117988792501
+    },
+    {
+      "routing_key": "bengkulu",
+      "nama_daerah": "Bengkulu",
+      "lspe_id": "267",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\bengkulu_267",
+      "anomaly_threshold": 0.566877577392496,
+      "medium_cutoff": 0.46672586476482886
+    },
+    {
+      "routing_key": "dki jakarta",
+      "nama_daerah": "DKI Jakarta",
       "lspe_id": "127",
-      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jakarta_127",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\dki_jakarta_127",
       "anomaly_threshold": 0.5819433760068418,
       "medium_cutoff": 0.46211583411703916
+    },
+    {
+      "routing_key": "daerah istimewa yogyakarta",
+      "nama_daerah": "Daerah Istimewa Yogyakarta",
+      "lspe_id": "13",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\daerah_istimewa_yogyakarta_13",
+      "anomaly_threshold": 0.5741806802660538,
+      "medium_cutoff": 0.4644568843342851
+    },
+    {
+      "routing_key": "jambi",
+      "nama_daerah": "Jambi",
+      "lspe_id": "70",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jambi_70",
+      "anomaly_threshold": 0.5656081526620175,
+      "medium_cutoff": 0.45634430053434105
+    },
+    {
+      "routing_key": "jawa barat",
+      "nama_daerah": "Jawa Barat",
+      "lspe_id": "14",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jawa_barat_14",
+      "anomaly_threshold": 0.5759785944777152,
+      "medium_cutoff": 0.4582590824853943
     },
     {
       "routing_key": "jawa tengah",
       "nama_daerah": "Jawa Tengah",
       "lspe_id": "42",
       "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jawa_tengah_42",
-      "anomaly_threshold": 0.5876663748116363,
-      "medium_cutoff": 0.45801716448955926
+      "anomaly_threshold": 0.5747478407217045,
+      "medium_cutoff": 0.46187872855065104
     },
     {
       "routing_key": "jawa timur",
       "nama_daerah": "Jawa Timur",
       "lspe_id": "15",
       "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\jawa_timur_15",
-      "anomaly_threshold": 0.5735627218347938,
-      "medium_cutoff": 0.46942996416383587
+      "anomaly_threshold": 0.5764414364829475,
+      "medium_cutoff": 0.46833714188779846
+    },
+    {
+      "routing_key": "kalimantan timur",
+      "nama_daerah": "Kalimantan Timur",
+      "lspe_id": "35",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\kalimantan_timur_35",
+      "anomaly_threshold": 0.5624817287281108,
+      "medium_cutoff": 0.4584929463421445
+    },
+    {
+      "routing_key": "kalimantan utara",
+      "nama_daerah": "Kalimantan Utara",
+      "lspe_id": "716",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\kalimantan_utara_716",
+      "anomaly_threshold": 0.5716103998211728,
+      "medium_cutoff": 0.4606106533090146
+    },
+    {
+      "routing_key": "lampung",
+      "nama_daerah": "Lampung",
+      "lspe_id": "121",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\lampung_121",
+      "anomaly_threshold": 0.5668596720355394,
+      "medium_cutoff": 0.45659385598085395
+    },
+    {
+      "routing_key": "maluku",
+      "nama_daerah": "Maluku",
+      "lspe_id": "288",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\maluku_288",
+      "anomaly_threshold": 0.5805013226809488,
+      "medium_cutoff": 0.46788597401805476
+    },
+    {
+      "routing_key": "maluku utara",
+      "nama_daerah": "Maluku Utara",
+      "lspe_id": "361",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\maluku_utara_361",
+      "anomaly_threshold": 0.5677226291260986,
+      "medium_cutoff": 0.4614858145848159
+    },
+    {
+      "routing_key": "nusa tenggara barat",
+      "nama_daerah": "Nusa Tenggara Barat",
+      "lspe_id": "37",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\nusa_tenggara_barat_37",
+      "anomaly_threshold": 0.5765808700947818,
+      "medium_cutoff": 0.4619776357987124
+    },
+    {
+      "routing_key": "nusa tenggara timur",
+      "nama_daerah": "Nusa Tenggara Timur",
+      "lspe_id": "131",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\nusa_tenggara_timur_131",
+      "anomaly_threshold": 0.5743079268867627,
+      "medium_cutoff": 0.45909274500627695
+    },
+    {
+      "routing_key": "papua",
+      "nama_daerah": "Papua",
+      "lspe_id": "41",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\papua_41",
+      "anomaly_threshold": 0.5742899699112012,
+      "medium_cutoff": 0.45916216941924226
+    },
+    {
+      "routing_key": "papua barat",
+      "nama_daerah": "Papua Barat",
+      "lspe_id": "641",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\papua_barat_641",
+      "anomaly_threshold": 0.5706816040079453,
+      "medium_cutoff": 0.45649319427360396
+    },
+    {
+      "routing_key": "riau",
+      "nama_daerah": "Riau",
+      "lspe_id": "39",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\riau_39",
+      "anomaly_threshold": 0.5718592576938759,
+      "medium_cutoff": 0.46682959131920365
+    },
+    {
+      "routing_key": "sulawesi barat",
+      "nama_daerah": "Sulawesi Barat",
+      "lspe_id": "263",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sulawesi_barat_263",
+      "anomaly_threshold": 0.5704281977731289,
+      "medium_cutoff": 0.45381808524256356
+    },
+    {
+      "routing_key": "sulawesi selatan",
+      "nama_daerah": "Sulawesi Selatan",
+      "lspe_id": "36",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sulawesi_selatan_36",
+      "anomaly_threshold": 0.5761954695665829,
+      "medium_cutoff": 0.461465381953255
+    },
+    {
+      "routing_key": "sulawesi tengah",
+      "nama_daerah": "Sulawesi Tengah",
+      "lspe_id": "154",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sulawesi_tengah_154",
+      "anomaly_threshold": 0.5678882102826864,
+      "medium_cutoff": 0.46705403836839343
+    },
+    {
+      "routing_key": "sulawesi tenggara",
+      "nama_daerah": "Sulawesi Tenggara",
+      "lspe_id": "81",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sulawesi_tenggara_81",
+      "anomaly_threshold": 0.5670943744862164,
+      "medium_cutoff": 0.4590342396601314
+    },
+    {
+      "routing_key": "sulawesi utara",
+      "nama_daerah": "Sulawesi Utara",
+      "lspe_id": "173",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sulawesi_utara_173",
+      "anomaly_threshold": 0.5778294713343346,
+      "medium_cutoff": 0.46848711174482344
+    },
+    {
+      "routing_key": "sumatera selatan",
+      "nama_daerah": "Sumatera Selatan",
+      "lspe_id": "103",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sumatera_selatan_103",
+      "anomaly_threshold": 0.5698151724161372,
+      "medium_cutoff": 0.45861211768852367
+    },
+    {
+      "routing_key": "sumatera utara",
+      "nama_daerah": "Sumatera Utara",
+      "lspe_id": "27",
+      "artifact_dir": "C:\\Users\\VICTUS\\coding\\collab\\3\\artifacts\\post_award_anomaly\\by_daerah\\sumatera_utara_27",
+      "anomaly_threshold": 0.588743438201645,
+      "medium_cutoff": 0.4729475392852359
     }
   ]
 }

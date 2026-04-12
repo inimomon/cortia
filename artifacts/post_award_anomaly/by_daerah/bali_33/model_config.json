@@ -1,0 +1,52 @@
+{
+  "model_type": "IsolationForest",
+  "routing_mode": "per_nama_daerah",
+  "routing_key": "bali",
+  "region_name": "Bali",
+  "lspe_id": "33",
+  "numeric_features": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "log_tender_minvalue",
+    "log_award_value",
+    "title_word_count",
+    "award_title_word_count",
+    "supplier_count",
+    "award_value_per_day",
+    "same_day_award_flag",
+    "award_month",
+    "award_quarter",
+    "award_weekday"
+  ],
+  "categorical_features": [
+    "mainprocurementcategory"
+  ],
+  "feature_columns": [
+    "tender_minvalue",
+    "award_value",
+    "days_to_award",
+    "budget_utilization_ratio",
+    "value_gap",
+    "log_tender_minvalue",
+    "log_award_value",
+    "title_word_count",
+    "award_title_word_count",
+    "supplier_count",
+    "award_value_per_day",
+    "same_day_award_flag",
+    "award_month",
+    "award_quarter",
+    "award_weekday",
+    "mainprocurementcategory"
+  ],
+  "contamination": 0.03,
+  "medium_cutoff": 0.47338382506271176,
+  "anomaly_threshold": 0.5882643091515813,
+  "train_rows": 1643,
+  "test_rows": 291,
+  "train_end_date": "2021-06-25T00:00:00",
+  "test_start_date": "2021-06-28T00:00:00"
+}

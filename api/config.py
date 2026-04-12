@@ -9,8 +9,15 @@ class Config:
     BASE_DIR = Path(__file__).resolve().parent.parent
     ARTIFACT_DIR = BASE_DIR / "artifacts" / "post_award_anomaly" / "by_daerah"
     
-    # Daftar Daerah
-    DAERAH_LIST = ["jakarta_127", "jawa_timur_15", "jawa_tengah_42"]
+    # Daftar Daerah diambil dinamis dari folder artifacts yang tersedia
+    if ARTIFACT_DIR.exists():
+        DAERAH_LIST = sorted(
+            path.name
+            for path in ARTIFACT_DIR.iterdir()
+            if path.is_dir()
+        )
+    else:
+        DAERAH_LIST = []
     
     # Database Konfigurasi
     DB_CONFIG = {

@@ -1,4 +1,3 @@
-lspe_id,nama_daerah,date,buyer_name,tender_title,mainprocurementcategory,tender_minvalue,tender_status,award_title,award_date,award_value,award_supplier,days_to_award,budget_utilization_ratio,demo_case_label
-42,Jawa Tengah,2023-05-23,Pemerintah Daerah Provinsi Jawa Tengah,Dd Penanganan Banjir Dan Rob Kab. Kendal,Services,774999780.0,Complete,Dd Penanganan Banjir Dan Rob Kab. Kendal,2023-05-23,692862000.0,Primasetia Eng Con,47,0.8940157376560803,jawa_tengah_42_normal_demo
-42,Jawa Tengah,2023-05-30,Pemerintah Daerah Provinsi Jawa Tengah,Revitalisasi Sarana Prasarana Di Loka Biap Maribaya,Works,346777910.04,Complete,Revitalisasi Sarana Prasarana Di Loka Biap Maribaya,2023-05-30,262700000.0,"Sembilan Runny, Cv",19,0.7575453695124299,jawa_tengah_42_warning_demo
-42,Jawa Tengah,2023-05-30,Pemerintah Daerah Provinsi Jawa Tengah,Pembangunan Gedung Critical Center Dan Pelayanan Penunjang,Works,130548214615.53,Complete,Pembangunan Gedung Critical Center Dan Pelayanan Penunjang,2023-05-30,103209369556.04,Pt. Jaya Arnikon,47,0.7905843052698648,jawa_tengah_42_anomaly_demo
+version https://git-lfs.github.com/spec/v1
+oid sha256:8c1888b91b21a0e9d3ee4505799acd6c957a8fd7fffaed0978aba68a2a7f0442
+size 1017

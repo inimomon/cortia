@@ -38,7 +38,7 @@ for d in Config.DAERAH_LIST:
 
 # --- DATA MODELS (UNTUK SWAGGER DOKUMENTASI) ---
 class ProcurementData(BaseModel):
-    daerah: str = Field(..., example="jakarta_127", description="ID Daerah (jakarta_127, jawa_timur_15, dll)")
+    daerah: str = Field(..., example="jakarta_127", description="ID daerah sesuai folder artifact yang tersedia, misalnya jakarta_127")
     award_date: str = Field(..., example="2023-05-20", description="Format: YYYY-MM-DD")
     tender_minvalue: float = Field(..., example=1500000000.0)
     award_value: float = Field(..., example=1495000000.0)
@@ -276,7 +276,7 @@ def predict_anomaly(payload: ProcurementData, background_tasks: BackgroundTasks)
 async def predict_anomaly_file(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(..., description="Upload file CSV berisikan data pengadaan"),
-    daerah: str = Form(..., description="ID Daerah (contoh: jawa_timur_15)")
+    daerah: str = Form(..., description="ID daerah sesuai folder artifact, contoh: jawa_timur_15")
 ):
     if daerah not in models_db:
         raise HTTPException(status_code=400, detail=f"Daerah '{daerah}' tidak ditemukan.")

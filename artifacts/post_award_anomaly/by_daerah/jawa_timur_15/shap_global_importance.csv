@@ -1,17 +1,3 @@
-lspe_id,nama_daerah,raw_feature,mean_abs_shap
-15,Jawa Timur,mainprocurementcategory,0.4930597769729428
-15,Jawa Timur,award_quarter,0.19088399858273258
-15,Jawa Timur,award_value_per_day,0.18361021155279844
-15,Jawa Timur,tender_minvalue,0.16418578662876293
-15,Jawa Timur,value_gap,0.1620715969609861
-15,Jawa Timur,award_value,0.14707303206635206
-15,Jawa Timur,award_month,0.14280965280023486
-15,Jawa Timur,days_to_award,0.1402650486219996
-15,Jawa Timur,log_tender_minvalue,0.13643140029542106
-15,Jawa Timur,log_award_value,0.132735163427782
-15,Jawa Timur,budget_utilization_ratio,0.12257448788603491
-15,Jawa Timur,title_word_count,0.11911836663886297
-15,Jawa Timur,award_title_word_count,0.11819457533453806
-15,Jawa Timur,award_weekday,0.09505970745981569
-15,Jawa Timur,supplier_count,0.06607466481496203
-15,Jawa Timur,same_day_award_flag,0.0
+version https://git-lfs.github.com/spec/v1
+oid sha256:69d72e9cedbea7590e9704fefeed7bd01f507187b697f3d2f778661b1bfbbff0
+size 842

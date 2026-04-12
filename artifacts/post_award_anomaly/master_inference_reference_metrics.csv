@@ -1,7 +1,3 @@
-metric,value
-total_rows_scored,1502.0
-reference_rows_found,1502.0
-reference_true_matches,1502.0
-reference_false_mismatches,0.0
-reference_label_accuracy_pct,100.0
-reference_score_accuracy_pct,100.0
+version https://git-lfs.github.com/spec/v1
+oid sha256:a0deb6a74057dcfb53e7c5dbdceb5d985cd8e0ed21f42005819c6b3f5e1af1ca
+size 200
