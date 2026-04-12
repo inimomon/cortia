@@ -9,7 +9,7 @@ import mysql.connector
 from datetime import datetime
 from config import Config
 
-# --- KONFIGURASI APP ---
+# config API
 app = FastAPI(
     title="Cortia Anomaly Detection API",
     description="API untuk mendeteksi anomali pengadaan barang/jasa menggunakan Isolation Forest & SHAP Explainer. Data tersimpan otomatis ke MySQL.",
@@ -17,7 +17,7 @@ app = FastAPI(
 )
 router = APIRouter(prefix="/cortia/api/v1")
 
-# --- LOAD ARTIFACTS (MODEL ML) ---
+# load Artifacts(Model)
 models_db = {}
 
 print(f"Mencari model di: {Config.ARTIFACT_DIR}")
@@ -36,7 +36,7 @@ for d in Config.DAERAH_LIST:
     else:
         print(f"Peringatan: Folder {reg_dir} tidak ditemukan.")
 
-# --- DATA MODELS (UNTUK SWAGGER DOKUMENTASI) ---
+# Data Models for swagger
 class ProcurementData(BaseModel):
     daerah: str = Field(..., example="jakarta_127", description="ID daerah sesuai folder artifact yang tersedia, misalnya jakarta_127")
     award_date: str = Field(..., example="2023-05-20", description="Format: YYYY-MM-DD")
@@ -48,7 +48,7 @@ class ProcurementData(BaseModel):
     days_to_award: int = Field(..., example=5)
     mainprocurementcategory: str = Field(..., example="Works")
 
-# --- KAMUS MAPPING UNTUK SHAP (PENJELASAN) ---
+# kamus Mapping 
 KAMUS_KONSEP = {
     "award_title_word_count": "Kompleksitas Judul Kontrak",
     "days_to_award": "Durasi Proses Tender",
@@ -70,7 +70,7 @@ KAMUS_RISIKO = {
     "tender_minvalue": "penetapan batas minimum yang tidak lazim berisiko membatasi partisipasi vendor kompeten."
 }
 
-# --- DATABASE FUNCTIONS ---
+# db func
 def get_db_connection():
     return mysql.connector.connect(**Config.DB_CONFIG)
 
@@ -90,7 +90,7 @@ def save_prediction_to_db(daerah, tender_title, score, risk_level, explanation):
         cursor.execute(query, values)
         conn.commit()
     except mysql.connector.Error as err:
-        print(f"❌ Error Database: {err}")
+        print(f"Error Database: {err}")
     finally:
         if 'conn' in locals() and conn.is_connected():
             cursor.close()
@@ -117,15 +117,15 @@ def save_batch_predictions_to_db(daerah, results):
         
         cursor.executemany(query, data_to_insert)
         conn.commit()
-        print(f"✅ Berhasil menyimpan {len(results)} data dari file CSV ke MySQL.")
+        print(f"Berhasil menyimpan {len(results)} data dari file CSV ke MySQL.")
     except mysql.connector.Error as err:
-        print(f"❌ Error Database Batch: {err}")
+        print(f"Error Database Batch: {err}")
     finally:
         if 'conn' in locals() and conn.is_connected():
             cursor.close()
             conn.close()
 
-# --- LOGIC HELPER FUNCTIONS ---
+# helper func
 def format_number(value):
     if pd.isna(value): return "missing"
     if isinstance(value, (int, np.integer)): return f"{int(value):,}"
@@ -212,7 +212,7 @@ def explain_prediction_shap(original_row, row_shap, explanation_meta):
 
     return f"[{severity_band.upper()}] {header}\n" + "\n".join([f"• {r}" for r in reasons])
 
-# --- ENDPOINTS ---
+# endpoint
 @router.get("/", tags=["Health Check"])
 def read_root():
     return {"status": "online", "message": "Welcome to Cortia API v1!", "database": "Terhubung jika DB aktif"}
